@@ -1,0 +1,29 @@
+_schema-version: 2.0.0
+ID: Salesorder
+version: 1.0.0
+modules:
+  - name: Salesorder-db
+    type: hdb
+    path: db
+    parameters:
+      memory: 256M
+      disk-quota: 256M
+    requires:
+      - name: Salesorder-db-hdi-container
+  - name: Salesorder-srv
+    type: nodejs
+    path: srv
+    parameters:
+      memory: 512M
+      disk-quota: 256M
+    provides:
+      - name: srv_api
+        properties:
+          url: ${default-url}
+    requires:
+      - name: Salesorder-db-hdi-container
+resources:
+  - name: Salesorder-db-hdi-container
+    type: com.sap.xs.hdi-container
+    properties:
+      hdi-container-name: ${service-name}

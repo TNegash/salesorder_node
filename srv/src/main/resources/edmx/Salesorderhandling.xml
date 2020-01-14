@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+  <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Capabilities.V1.xml">
+    <edmx:Include Alias="Capabilities" Namespace="Org.OData.Capabilities.V1"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="https://wiki.scn.sap.com/wiki/download/attachments/448470974/Common.xml?api=v2">
+    <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+  </edmx:Reference>
+  <edmx:DataServices>
+    <Schema Namespace="Salesorderhandling" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <EntityContainer Name="EntityContainer">
+        <EntitySet Name="Products" EntityType="Salesorderhandling.Products"/>
+        <EntitySet Name="Salesorder" EntityType="Salesorderhandling.Salesorder">
+          <NavigationPropertyBinding Path="Salesorderitem" Target="Salesorderitem"/>
+        </EntitySet>
+        <EntitySet Name="Salesorderitem" EntityType="Salesorderhandling.Salesorderitem">
+          <NavigationPropertyBinding Path="salesOrder" Target="Salesorder"/>
+        </EntitySet>
+      </EntityContainer>
+      <EntityType Name="Products">
+        <Key>
+          <PropertyRef Name="ObjectID"/>
+        </Key>
+        <Property Name="ObjectID" Type="Edm.String" MaxLength="70" Nullable="false"/>
+        <Property Name="InternalID" Type="Edm.String" MaxLength="40"/>
+        <Property Name="Description" Type="Edm.String" MaxLength="40"/>
+      </EntityType>
+      <EntityType Name="Salesorder">
+        <Key>
+          <PropertyRef Name="salesOrderID"/>
+        </Key>
+        <Property Name="salesOrderID" Type="Edm.String" Nullable="false"/>
+        <Property Name="customer" Type="Edm.String"/>
+        <Property Name="orderDate" Type="Edm.DateTimeOffset"/>
+        <NavigationProperty Name="Salesorderitem" Type="Collection(Salesorderhandling.Salesorderitem)" Partner="salesOrder">
+          <OnDelete Action="Cascade"/>
+        </NavigationProperty>
+      </EntityType>
+      <EntityType Name="Salesorderitem">
+        <Key>
+          <PropertyRef Name="itemID"/>
+          <PropertyRef Name="salesOrder_salesOrderID"/>
+        </Key>
+        <Property Name="itemID" Type="Edm.Int32" Nullable="false"/>
+        <NavigationProperty Name="salesOrder" Type="Salesorderhandling.Salesorder" Partner="Salesorderitem">
+          <ReferentialConstraint Property="salesOrder_salesOrderID" ReferencedProperty="salesOrderID"/>
+        </NavigationProperty>
+        <Property Name="productID" Type="Edm.String"/>
+        <Property Name="productDescription" Type="Edm.String"/>
+        <Property Name="quantity" Type="Edm.Decimal" Scale="3" Precision="12"/>
+        <Property Name="quantityUOM" Type="Edm.String"/>
+        <Property Name="confirmedQuantity" Type="Edm.Decimal" Scale="3" Precision="12"/>
+        <Property Name="confirmedQuantityUOM" Type="Edm.String"/>
+        <Property Name="price" Type="Edm.Decimal" Scale="3" Precision="12"/>
+        <Property Name="currency" Type="Edm.String" MaxLength="3"/>
+        <Property Name="salesOrder_salesOrderID" Type="Edm.String" Nullable="false"/>
+      </EntityType>
+      <Action Name="CheckATP" IsBound="true">
+        <Parameter Name="in" Type="Salesorderhandling.Salesorderitem"/>
+        <ReturnType Type="Edm.String" MaxLength="255"/>
+      </Action>
+      <Annotations Target="Salesorderhandling.EntityContainer/Products">
+        <Annotation Term="Capabilities.DeleteRestrictions">
+          <Record Type="Capabilities.DeleteRestrictionsType">
+            <PropertyValue Property="Deletable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.InsertRestrictions">
+          <Record Type="Capabilities.InsertRestrictionsType">
+            <PropertyValue Property="Insertable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.UpdateRestrictions">
+          <Record Type="Capabilities.UpdateRestrictionsType">
+            <PropertyValue Property="Updatable" Bool="false"/>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="Salesorderhandling.Salesorderitem/salesOrder">
+        <Annotation Term="Common.Label" String="Sales Order ID"/>
+      </Annotations>
+      <Annotations Target="Salesorderhandling.Salesorderitem/salesOrder_salesOrderID">
+        <Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Hidden"/>
+        <Annotation Term="Common.Label" String="Sales Order ID"/>
+      </Annotations>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>
