@@ -22,8 +22,28 @@ modules:
           url: ${default-url}
     requires:
       - name: Salesorder-db-hdi-container
+      - name: uaa_Salesorder
+  - name: SalesOrder
+    type: html5
+    path: SalesOrder
+    parameters:
+       disk-quota: 256M
+       memory: 256M
+    build-parameters:
+       builder: grunt
+    requires:
+     - name: uaa_Salesorder
+
 resources:
   - name: Salesorder-db-hdi-container
     type: com.sap.xs.hdi-container
     properties:
       hdi-container-name: ${service-name}
+
+  - name: uaa_Salesorder
+    parameters:
+       path: ./xs-security.json
+       service-plan: application
+       service: xsuaa
+    type: org.cloudfoundry.managed-service
+

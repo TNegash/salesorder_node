@@ -20,31 +20,15 @@
     "cds": {
         "requires": {
             "db": {
-                "kind": "sqlite",
+                "kind": "hana",
                 "model": [
                     "db",
                     "srv"
                 ],
-                "credentials": {
-                    "database": "my_app.db"
-                },
                 "[production]": {
                     "kind": "hana"
                 }
             }
-        },
-        "odata": {
-            "version": "v4"
         }
-    },
-    "files": [
-        "db",
-        "srv"
-    ],
-    "devDependencies": {
-        "@sap/cloud-sdk-generator": "^1.15.0",
-        "@sap/edmx2csn": "^1.0.8",
-        "fast-xml-parser": "^3.16.0",
-        "sqlite3": "^4.1.1"
     }
 }
